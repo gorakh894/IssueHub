@@ -1,0 +1,1100 @@
+{
+	"info": {
+		"name": "IssueHub API Collection",
+		"description": "Complete API collection for IssueHub - Issue Tracking & Resolution Platform",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "1. Health Check",
+			"item": [
+				{
+					"name": "Basic Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/health",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "health"]
+						}
+					}
+				},
+				{
+					"name": "MongoDB Connection Test",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/health/mongodb",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "health", "mongodb"]
+						}
+					}
+				},
+				{
+					"name": "Application Info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/health/info",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "health", "info"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "2. Authentication",
+			"item": [
+				{
+					"name": "Register User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set(\"token\", jsonData.data.token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\",\n  \"phone\": \"1234567890\",\n  \"role\": \"EMPLOYEE\",\n  \"department\": \"IT\",\n  \"employeeId\": \"TEST001\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/register",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "register"]
+						}
+					}
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set(\"token\", jsonData.data.token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"employee1@issuehub.com\",\n  \"password\": \"emp123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "login"]
+						}
+					}
+				},
+				{
+					"name": "Get Current User",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/me",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "me"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "3. Categories",
+			"item": [
+				{
+					"name": "Get All Categories",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/categories?activeOnly=false",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "categories"],
+							"query": [
+								{
+									"key": "activeOnly",
+									"value": "false"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Category by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/categories/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "categories", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "CATEGORY_ID"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Category",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Test Category\",\n  \"description\": \"This is a test category\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/categories",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "categories"]
+						}
+					}
+				},
+				{
+					"name": "Update Category",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Updated Category\",\n  \"description\": \"Updated description\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/categories/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "categories", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "CATEGORY_ID"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Toggle Category Status",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/categories/:id/toggle-status",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "categories", ":id", "toggle-status"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "CATEGORY_ID"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Category",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/categories/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "categories", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "CATEGORY_ID"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "4. Issues",
+			"item": [
+				{
+					"name": "Create Issue",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"AC not working in Lab 3\",\n  \"description\": \"Air conditioner in Lab 3 has stopped working completely\",\n  \"categoryId\": \"CATEGORY_ID\",\n  \"location\": {\n    \"building\": \"Main Building\",\n    \"floor\": \"2\",\n    \"room\": \"Lab 3\"\n  },\n  \"priority\": \"HIGH\",\n  \"attachments\": []\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/issues",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "issues"]
+						}
+					}
+				},
+				{
+					"name": "Get All Issues",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/issues?page=0&size=10&sortBy=createdAt&sortDir=DESC",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "issues"],
+							"query": [
+								{
+									"key": "status",
+									"value": "IN_PROGRESS",
+									"disabled": true
+								},
+								{
+									"key": "priority",
+									"value": "HIGH",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "sortBy",
+									"value": "createdAt"
+								},
+								{
+									"key": "sortDir",
+									"value": "DESC"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Search Issues",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/issues/search?keyword=air&page=0&size=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "issues", "search"],
+							"query": [
+								{
+									"key": "keyword",
+									"value": "air"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Issue by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/issues/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "issues", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "ISSUE_ID"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Issue",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Updated Issue Title\",\n  \"description\": \"Updated description\",\n  \"categoryId\": \"CATEGORY_ID\",\n  \"location\": {\n    \"building\": \"Main Building\",\n    \"floor\": \"3\",\n    \"room\": \"Lab 5\"\n  },\n  \"priority\": \"CRITICAL\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/issues/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "issues", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "ISSUE_ID"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Issue Status",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"IN_PROGRESS\",\n  \"comment\": \"Started working on the issue\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/issues/:id/status",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "issues", ":id", "status"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "ISSUE_ID"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Issue Priority",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"priority\": \"CRITICAL\",\n  \"comment\": \"Escalating to critical priority\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/issues/:id/priority",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "issues", ":id", "priority"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "ISSUE_ID"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Assign Issue to Technician",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"technicianId\": \"TECHNICIAN_USER_ID\",\n  \"comment\": \"Assigned to John for resolution\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/issues/:id/assign",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "issues", ":id", "assign"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "ISSUE_ID"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Issue Comments",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/issues/:id/comments",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "issues", ":id", "comments"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "ISSUE_ID"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Add Comment to Issue",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"message\": \"Working on the issue. ETA: 2 hours\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/issues/:id/comments",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "issues", ":id", "comments"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "ISSUE_ID"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Issue History",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/issues/:id/history",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "issues", ":id", "history"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "ISSUE_ID"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Issue",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/issues/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "issues", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "ISSUE_ID"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "5. File Upload",
+			"item": [
+				{
+					"name": "Upload Single File",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/uploads/single?folder=test",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "uploads", "single"],
+							"query": [
+								{
+									"key": "folder",
+									"value": "test"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Upload Multiple Files",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "files",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "files",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/uploads/multiple?folder=issues",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "uploads", "multiple"],
+							"query": [
+								{
+									"key": "folder",
+									"value": "issues"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Upload Issue Attachment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/uploads/issue-attachment",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "uploads", "issue-attachment"]
+						}
+					}
+				},
+				{
+					"name": "Delete File",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/uploads?publicId=issuehub/test/filename",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "uploads"],
+							"query": [
+								{
+									"key": "publicId",
+									"value": "issuehub/test/filename"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "6. Users",
+			"item": [
+				{
+					"name": "Get All Users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/users",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "users"]
+						}
+					}
+				},
+				{
+					"name": "Get Users by Role",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/users/role/TECHNICIAN",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "users", "role", "TECHNICIAN"]
+						}
+					}
+				},
+				{
+					"name": "Get All Technicians",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/users/technicians?activeOnly=true",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "users", "technicians"],
+							"query": [
+								{
+									"key": "activeOnly",
+									"value": "true"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Profile Image",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/users/profile-image",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "users", "profile-image"]
+						}
+					}
+				},
+				{
+					"name": "Delete Profile Image",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/users/profile-image",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "users", "profile-image"]
+						}
+					}
+				},
+				{
+					"name": "Toggle User Status",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/users/:id/toggle-status",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "users", ":id", "toggle-status"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "USER_ID"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "7. Notifications",
+			"item": [
+				{
+					"name": "Get All Notifications",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/notifications?page=0&size=20",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "notifications"],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "20"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Unread Notifications",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/notifications/unread",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "notifications", "unread"]
+						}
+					}
+				},
+				{
+					"name": "Get Unread Count",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/notifications/unread/count",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "notifications", "unread", "count"]
+						}
+					}
+				},
+				{
+					"name": "Mark as Read",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/notifications/:id/read",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "notifications", ":id", "read"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "NOTIFICATION_ID"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Mark All as Read",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/notifications/read-all",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "notifications", "read-all"]
+						}
+					}
+				},
+				{
+					"name": "Delete Notification",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/notifications/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "notifications", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "NOTIFICATION_ID"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "8. Dashboard",
+			"item": [
+				{
+					"name": "Employee Dashboard",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/dashboard/employee",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "dashboard", "employee"]
+						}
+					}
+				},
+				{
+					"name": "Manager Dashboard",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/dashboard/manager",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "dashboard", "manager"]
+						}
+					}
+				},
+				{
+					"name": "Technician Dashboard",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/dashboard/technician",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "dashboard", "technician"]
+						}
+					}
+				}
+			]
+		}
+	]
+}
