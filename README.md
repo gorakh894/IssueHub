@@ -83,8 +83,34 @@ src/main/java/com/issuehub/
 - **Maven 3.6+** installed
 - **MongoDB Atlas account** (or local MongoDB)
 - **IDE** (IntelliJ IDEA, Eclipse, or VS Code)
+- **Docker & Docker Compose** (optional, for containerized deployment)
 
 ## Setup Instructions
+
+### Option 1: Docker Deployment (Recommended) 🐳
+
+The fastest way to get started! Docker deployment includes everything: backend, frontend, and MongoDB.
+
+**Quick Start:**
+```bash
+# 1. Copy environment file
+cp .env.docker .env
+
+# 2. Update .env with your credentials
+
+# 3. Start everything
+docker-compose up -d
+
+# Access application
+# Frontend: http://localhost:3000
+# Backend: http://localhost:8080
+```
+
+📖 **Detailed Docker Guides:**
+- **Quick Start**: [DOCKER_QUICKSTART.md](./DOCKER_QUICKSTART.md) - Get running in 5 minutes
+- **Full Guide**: [DOCKER_DEPLOYMENT_GUIDE.md](./DOCKER_DEPLOYMENT_GUIDE.md) - Complete documentation
+
+### Option 2: Manual Setup
 
 ### 1. Clone the Repository
 ```bash
@@ -326,14 +352,16 @@ java -jar target/issuehub-1.0.0.jar
 ## 📚 Documentation
 
 - **README.md** - Project overview and quick start
+- **DOCKER_QUICKSTART.md** - Docker deployment in 5 minutes ✅ NEW
+- **DOCKER_DEPLOYMENT_GUIDE.md** - Complete Docker guide ✅ NEW
 - **API_TESTING.md** - Complete API testing guide
 - **PHASE_8_TESTING.md** - Categories & Notifications testing
 - **PHASE_9_TESTING.md** - File upload testing guide  
 - **PHASE_10_TESTING.md** - Dashboard & Analytics testing
-- **DEPLOYMENT_GUIDE.md** - Complete deployment guide ✅ NEW
-- **IssueHub_Postman_Collection.json** - Postman collection for API testing ✅ NEW
+- **DEPLOYMENT_GUIDE.md** - Complete deployment guide
+- **IssueHub_Postman_Collection.json** - Postman collection for API testing
 
-## 🚀 Quick Start
+## 🐳 Docker Deployment
 
 ### 1. Prerequisites
 - Java 17+
@@ -398,5 +426,33 @@ Copyright © 2026 IssueHub. All rights reserved.
 ---
 
 **Current Status:** Phase 10 Complete - Dashboard & Analytics with MongoDB aggregation implemented! Real-time statistics for all user roles.
-#   I s s u e H u b  
+#   I s s u e H u b 
  
+ 
+
+
+## 🐳 Docker Files Created
+
+The following Docker configuration files have been added:
+
+- **Dockerfile** - Optimized multi-stage backend build
+- **frontend/Dockerfile** - Frontend with Nginx production server
+- **frontend/nginx.conf** - Nginx configuration for React SPA
+- **docker-compose.yml** - Full stack deployment configuration
+- **docker-compose.dev.yml** - Development environment with Mongo Express
+- **docker-compose.prod.yml** - Production-optimized configuration
+- **.dockerignore** - Backend Docker ignore rules
+- **frontend/.dockerignore** - Frontend Docker ignore rules
+- **.env.docker** - Docker environment template
+- **mongo-init.js** - MongoDB initialization script
+- **scripts/docker-deploy.sh** - Unix/Linux deployment script
+- **scripts/docker-deploy.ps1** - Windows PowerShell deployment script
+- **.github/workflows/docker-build.yml** - CI/CD pipeline for Docker builds
+
+## 🎯 Next Steps with Docker
+
+1. **Review** [DOCKER_QUICKSTART.md](./DOCKER_QUICKSTART.md) for immediate deployment
+2. **Configure** your environment in `.env` file
+3. **Deploy** with `docker-compose up -d`
+4. **Monitor** with `docker-compose logs -f`
+5. **Scale** for production using `docker-compose.prod.yml`
